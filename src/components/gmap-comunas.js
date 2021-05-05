@@ -15,6 +15,7 @@ export const GmapComunas = (props) => {
     const [layer, setLayer] = useState('comunas');
     const [center, setCenter] = useState();
     const [bounds, setBounds] = useState();
+    const [zoom, setZoom] = useState(14);
 
     useEffect(() => {
         jlc.loader.init$().subscribe(r => {
@@ -38,10 +39,12 @@ export const GmapComunas = (props) => {
 
     const defaultPolygonOptions = {
         strokeColor: '#888888',
+        fillColor: '#888888',
     }
 
     const hoverPolygonOptions = {
         strokeColor: '#006400',
+        fillColor: '#ff0000',
     }
 
     const handlePolygonClick = (key, id, item) => {
@@ -56,6 +59,10 @@ export const GmapComunas = (props) => {
 
     const handlePolygonMouseout = (e, v) => {
         v.setOptions(defaultPolygonOptions);
+    }
+
+    const handleZoomChange = (z, m) => {
+        setZoom(z);
     }
 
     const toggleLayer = () => {
@@ -79,7 +86,6 @@ export const GmapComunas = (props) => {
     const defaultPolygonProps = {...defaultPolygonOptions,
         strokeOpacity: 0.8,
         strokeWeight: 2,
-        fillColor: '#888888',
         fillOpacity: 0.35,
         onMouseover: handlePolygonMouseover,
         onMouseout: handlePolygonMouseout,
@@ -93,10 +99,14 @@ export const GmapComunas = (props) => {
 
     )  : null;
 
-    const getMarkersJsx = key => jsonLoaded && layer === key ? getPolygonsData(key).map(item =>
+    const getMarkersJsx = key => jsonLoaded && layer === key && props.maxMarkerZoom && props.maxMarkerZoom <= zoom ? getPolygonsData(key).map(item =>
             <Marker label={item.rentabilidad.toString()}
                     position={jlc.loader.getPolygonCenter(item.paths)}
                     onClick={(e, v)=> handlePolygonClick(key, item.id, item)}
+                    icon={{
+                        path: props.google.maps.SymbolPath.CIRCLE,
+                        scale: 0
+                    }}
             />
     )  : null;
 
@@ -111,6 +121,7 @@ export const GmapComunas = (props) => {
                  zoom={14}
                  bounds={bounds}
                  center={center}
+                 onZoomChanged={(mapProps,m) => handleZoomChange(m.zoom, m)}
             >
                 {getPolygonsJsx('comunas')}
                 {getPolygonsJsx('subzonas')}

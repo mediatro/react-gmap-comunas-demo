@@ -19,7 +19,10 @@ function App() {
       <QueryClientProvider client={queryClient}>
       <GeoJsonLoaderProvider queryClient={queryClient} urlConfig={urlConfig}>
         <div className="App">
-          <GmapComunasWrapped onPolygonClick={(key, id, item)=>console.log('clicked', key, id, item)}/>
+          <GmapComunasWrapped maxMarkerZoom={12}
+                              onPolygonClick={(key, id, item)=>console.log('clicked', key, id, item)}
+
+          />
         </div>
       </GeoJsonLoaderProvider>
       </QueryClientProvider>
