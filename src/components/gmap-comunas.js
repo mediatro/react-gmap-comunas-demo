@@ -34,6 +34,9 @@ export const GmapComunas = (props) => {
             setBounds(new props.google.maps.LatLngBounds(
                 bounds[0], bounds[1]
             ));
+            if(layer !== key){
+                setLayer(key);
+            }
         }
     }
 
